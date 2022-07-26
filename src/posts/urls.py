@@ -4,10 +4,10 @@ from . import views
 
 
 router = DefaultRouter()
-router.register(r'', views.PostViewSet,basename="")
 router.register(r'', views.WhetherViewSet,basename="whether/")
 
 urlpatterns =[
-  path('', views.postList),
+  path('', views.PostListView.as_view()),
+  path('<int:pk>/', views.PostDetailView.as_view()),
   path('whether/', views.whetherList)
 ]
