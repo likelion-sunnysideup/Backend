@@ -2,7 +2,6 @@ from .models import Post, Whether
 from rest_framework import serializers
 from accounts.serializers import UserSerializer
 
-
 class PostSerializers(serializers.ModelSerializer) :
   class Meta :
     model = Post

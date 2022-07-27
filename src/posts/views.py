@@ -24,7 +24,6 @@ class PostListView(
     
     print(request_serializer.data)
     request_body = request_serializer.data
-    post_writer = User.objects.get(id=request_body.get('writer_id'))
 
     new_post = {
       'writer' : request_body.get('writer_id'),
