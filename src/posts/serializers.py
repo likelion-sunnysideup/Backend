@@ -5,7 +5,7 @@ from accounts.serializers import UserSerializer
 class PostSerializers(serializers.ModelSerializer) :
   class Meta :
     model = Post
-    fields = ['id', 'whether', 'writer', 'title', 'img_url', 'top', 'pants', 'shoes', 'tips']
+    fields = ['id', 'title', 'img_url', 'visibility', 'longitude', 'latitude', 'start_time', 'end_time', 'whether_approved', 'whether', 'writer', 'top', 'pants', 'shoes', 'tips']
     extra_kwargs = {'whether': {'required': False}}
   
   def to_representation(self, instance):
@@ -32,6 +32,12 @@ class PostRequestSerializers(serializers.Serializer) :
   writer_id = serializers.IntegerField()
   title = serializers.CharField(max_length=50)
   img_url = serializers.URLField()
+  visibility = serializers.CharField(max_length=10)
+  longitude = serializers.FloatField()
+  latitude = serializers.FloatField()
+  start_time = serializers.DateTimeField()
+  end_time = serializers.DateTimeField()
+  whether_approved = serializers.BooleanField()
   top = serializers.CharField(max_length=200)
   pants = serializers.CharField(max_length=200)
   shoes = serializers.CharField(max_length=200)

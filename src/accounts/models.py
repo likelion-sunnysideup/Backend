@@ -7,3 +7,4 @@ class User(models.Model):
   create_at = models.DateTimeField(null=False, blank=False)
   updated_at = models.DateTimeField(null=False, blank=False)
   user_token = models.CharField(max_length=30, null=False, blank=False, unique=True)
+  
