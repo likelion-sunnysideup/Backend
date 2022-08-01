@@ -19,7 +19,7 @@ class UserList(generics.ListAPIView):
 class KakaoLogin(APIView):
   def get(self, request):
     client_id = KAKAO_CONFIG['KAKAO_REST_API_KEY']
-    redirect_uri = "http://127.0.0.1:8000/user/kakao-oauth/" # TODO 이거 너무 하드 코딩
+    redirect_uri = "http://127.0.0.1:8000/users/kakao-oauth/" # TODO 이거 너무 하드 코딩
 
     uri = f"{kakao_login_uri}?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
     

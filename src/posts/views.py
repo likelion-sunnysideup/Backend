@@ -15,7 +15,12 @@ class PostListView(
   serializer_class = PostSerializers
 
   def get(self, request, *args, **kwargs) :
-    return self.list(request, *args, **kwargs)
+    if 'user-id' in request.GET :
+      data = Post.objects.filter(writer=request.GET['user-id'])
+      post_serializer = PostSerializers(data, many=True)
+      return Response(post_serializer.data, status=status.HTTP_200_OK)
+    else :
+      return self.list(request, *args, **kwargs)
   
   def post(self, request, *args, **kwargs):
     request_serializer = PostRequestSerializers(data=request.data)
@@ -29,6 +34,12 @@ class PostListView(
       'writer' : request_body.get('writer_id'),
       'title' : request_body.get('title'),
       'img_url' : request_body.get('img_url'),
+      'visibility' : request_body.get('visibility'),
+      'longitude' : request_body.get('longitude'),
+      'latitude' : request_body.get('latitude'), 
+      'start_time' : request_body.get('start_time'), 
+      'end_time' : request_body.get('end_time'),
+      'whether_approved' : request_body.get('whether_approved'),
       'top' :  request_body.get('top'),
       'pants' : request_body.get('pants'),
       'shoes' : request_body.get('shoes'),
@@ -61,6 +72,12 @@ class PostListView(
       'whether' : new_post.id,
       'title' : new_post.title,
       'img_url' : new_post.img_url,
+      'visibility' : new_post.visibility,
+      'longitude' : new_post.longitude,
+      'latitude' : new_post.latitude, 
+      'start_time' : new_post.start_time, 
+      'end_time' : new_post.end_time,
+      'whether_approved' : new_post.whether_approved,
       'top' :  new_post.top,
       'pants' : new_post.pants,
       'shoes' : new_post.shoes,
@@ -71,6 +88,16 @@ class PostListView(
       return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(post_serializer.data, status=status.HTTP_201_CREATED)
+
+class PostListByWhetherView( 
+  mixins.ListModelMixin, 
+  generics.GenericAPIView
+) :
+  queryset = Post.objects.all()
+  serializer_class = PostSerializers
+
+  def get(self, request, *args, **kwargs) :
+      return self.list(request, *args, **kwargs)
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView) :
   queryset = Post.objects.all()
