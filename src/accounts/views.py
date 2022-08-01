@@ -1,3 +1,4 @@
+from urllib import response
 from .serializers import UserSerializer
 from .models import User
 from rest_framework import generics
@@ -46,6 +47,7 @@ class UserInfoFromKakao(APIView) :
 
     token_response = requests.post(kakao_token_uri, headers=headers, data=payload)
     token = token_response.json().get('access_token')
+    print(token_response)
 
     headers = {
       'Authorization': 'Bearer ' + token,
@@ -74,3 +76,14 @@ class UserInfoFromKakao(APIView) :
     serializer = UserSerializer(new_user)
     response.data = serializer.data
     return response
+
+class GetByToken(APIView):
+  def get(self, request):
+    token = request.META.get('HTTP_ACCESSTOKEN')
+    try:
+      user = User.objects.get(user_token = token)
+      serializer = UserSerializer(user)
+      res = Response(serializer.data, status=status.HTTP_200_OK)
+    except User.DoesNotExist :
+      res = Response(status=status.HTTP_401_UNAUTHORIZED)
+    return res
