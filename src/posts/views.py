@@ -23,11 +23,16 @@ class PostListView(
       return self.list(request, *args, **kwargs)
   
   def post(self, request, *args, **kwargs):
+    checkList = ["top", "shoes", "pants", "tips"]
+    for i in checkList:
+      if(type(request.data.get(i)) == list):
+        request.data[i] = json.dumps(request.data.get(i))
+      else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     request_serializer = PostRequestSerializers(data=request.data)
     if not request_serializer.is_valid() :
       return Response(request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    print(request_serializer.data)
+    #print(type(request_serializer.data.get("top").replace("\\","").replace("[","").replace("]","").replace('"',"").split(",")))
     request_body = request_serializer.data
 
     new_post = {
@@ -65,7 +70,7 @@ class PostListView(
     if not whetherSerializers.is_valid():
       return Response(whetherSerializers.errors, status=status.HTTP_400_BAD_REQUEST)
     whetherSerializers.save()
-
+    
     new_post = Post.objects.get(id=post_serializer.data.get('id'))
     new_post = {
       'writer' : new_post.writer.id,
@@ -83,11 +88,10 @@ class PostListView(
       'shoes' : new_post.shoes,
       'tips' : new_post.tips
     }
-    post_serializer = PostSerializers(data=new_post)
-    if not post_serializer.is_valid():
-      return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    for i in checkList:
+      new_post[i] = json.loads(new_post.get(i))
+    return Response(new_post, status=status.HTTP_201_CREATED)
 
-    return Response(post_serializer.data, status=status.HTTP_201_CREATED)
 
 class PostListByWhetherView( 
   mixins.ListModelMixin, 
