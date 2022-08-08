@@ -10,7 +10,7 @@ from .Globals import KAKAO_CONFIG, kakao_login_uri ,kakao_token_uri, kakao_profi
 import requests
 from django import utils
 from uuid import uuid4
-import json
+import json, pprint
 
 class UserList(generics.ListAPIView):
   queryset = User.objects.all()
