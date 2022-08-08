@@ -27,6 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "port-0-backend-5faq24l6klj7k3.gksl1.cloudtype.app",
+    "127.0.0.1"
 ]
 
 
