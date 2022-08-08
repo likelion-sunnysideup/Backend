@@ -67,7 +67,6 @@ class PostListByUserView(
   mixins.ListModelMixin, 
   generics.GenericAPIView
 ) :
-  queryset = Post.objects.all()
   serializer_class = PostSerializers
 
   def get(self, request, *args, **kwargs) :
@@ -78,7 +77,7 @@ class PostListByUserView(
       return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     if 'user-id' in request.GET :
-      queryset = Post.objects.filter(writer=request.GET['user-id'])
+      self.queryset = Post.objects.filter(writer=request.GET['user-id'])
       return self.list(request, *args, **kwargs)
     else :
       return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -88,7 +87,6 @@ class PostListByWhetherView(
   mixins.ListModelMixin, 
   generics.GenericAPIView
 ) :
-  queryset = Post.objects.all()
   serializer_class = PostSerializers
 
   def get(self, request, *args, **kwargs) :
@@ -148,7 +146,7 @@ class PostListByWhetherView(
     if not wind_speed == -1.0 :
       filter_query = filter_query & wind_speed_query
     
-    queryset = Post.objects.filter(filter_query)
+    self.queryset = Post.objects.filter(filter_query)
 
     return self.list(request=request, *args, **kwargs)    
 
