@@ -68,6 +68,10 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CORS_ALLOW_HEADERS = [
+    "accesstoken",
+]
+
 ROOT_URLCONF = 'src.urls'
 
 TEMPLATES = [
