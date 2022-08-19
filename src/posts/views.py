@@ -18,11 +18,11 @@ class PostListView(views.APIView) :
   serializer_class = PostSerializers
   
   def post(self, request, *args, **kwargs):
-    # token = request.META.get('HTTP_ACCESSTOKEN')
-    # try:
-    #   requester = User.objects.get(user_token = token)
-    # except User.DoesNotExist :
-    #   return Response(status=status.HTTP_401_UNAUTHORIZED)
+    token = request.META.get('HTTP_ACCESSTOKEN')
+    try:
+      requester = User.objects.get(user_token = token)
+    except User.DoesNotExist :
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
     
     request_serializer = PostRequestSerializers(data=request.data)
     if not request_serializer.is_valid() :
@@ -32,11 +32,7 @@ class PostListView(views.APIView) :
     img_string = request.data['img_base64']
     imgdata = base64.b64decode(img_string)
     now = datetime.now().strftime('%Y%m%d%H%M%S%f')
-    filename = request.data['writer_id'].__str__()+now.__str__() + ".jpeg"
-    # dir_list = os.listdir(settings.MEDIA_ROOT+'/users/')
-    # if str(request.data['writer_id']) not in dir_list:
-    #   os.makedirs(settings.MEDIA_ROOT+'/users/'+str(request.data['writer_id']))
-    # media_root = settings.MEDIA_ROOT+'/users/'+str(request.data['writer_id'])+'/'+filename
+    filename = str(requester.id)+now.__str__() + ".jpeg"
 
     media_root = settings.MEDIA_ROOT + '/'+filename
     media_url = request.build_absolute_uri(settings.MEDIA_URL + filename)
@@ -46,7 +42,7 @@ class PostListView(views.APIView) :
     # 폴더에만 저장하고 db에는 저장X 
 
     new_post = {
-      'writer' : 123,
+      'writer' : requester.id,
       'title' : request_body.get('title'),
       'img_url' : media_url, #??
       'visibility' : request_body.get('visibility'),
