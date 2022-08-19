@@ -1,3 +1,4 @@
+from csv import unregister_dialect
 from .models import Post, Whether
 from rest_framework import serializers
 from accounts.serializers import UserSerializer
@@ -55,7 +56,6 @@ class WhetherRepresentationSerializer(serializers.ModelSerializer) :
 class PostRequestSerializers(serializers.Serializer) :
   whether = WhetherRepresentationSerializer()
   title = serializers.CharField(max_length=50)
-  img_url = serializers.URLField(max_length=500)
   visibility = serializers.CharField(max_length=10)
   longitude = serializers.FloatField()
   latitude = serializers.FloatField()

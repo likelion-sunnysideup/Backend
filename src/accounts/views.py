@@ -11,6 +11,11 @@ import requests
 from django import utils
 from uuid import uuid4
 import json, pprint
+from rest_framework import viewsets
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 class UserList(generics.ListAPIView):
   queryset = User.objects.all()

@@ -10,7 +10,7 @@ class Post(models.Model) :
   id = models.AutoField(primary_key=True)
   writer = models.ForeignKey("accounts.User", related_name="post", on_delete=models.CASCADE, db_column="writer_id")
   title =  models.CharField(max_length=50, null=False, blank=False)
-  img_url =  models.URLField(max_length=500, null=False, blank=False)
+  img_url = models.URLField(max_length=500, null=False, blank=False)
   visibility = models.CharField(max_length=10, choices=VISIBILITY_CHOICE)
   longitude = models.FloatField(null=False, blank=False)
   latitude = models.FloatField(null=False, blank=False)
