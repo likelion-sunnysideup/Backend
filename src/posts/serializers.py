@@ -16,7 +16,6 @@ class PostSerializers(serializers.ModelSerializer) :
   pants = StringListField()
   shoes = StringListField()
   tips = StringListField()
-  photo = serializers.ImageField(use_url=True)
 
   def get_top(self, obj) :
     return json.loads(obj.top)
@@ -32,7 +31,7 @@ class PostSerializers(serializers.ModelSerializer) :
 
   class Meta :
     model = Post
-    fields = ['id', 'title', 'photo', 'visibility', 'longitude', 'latitude', 'start_time', 'end_time', 'whether_approved', 'whether', 'writer', 'top', 'pants', 'shoes', 'tips']
+    fields = ['id', 'title', 'img_url', 'visibility', 'longitude', 'latitude', 'start_time', 'end_time', 'whether_approved', 'whether', 'writer', 'top', 'pants', 'shoes', 'tips']
     extra_kwargs = {'whether': {'required': False}}
   
   def to_representation(self, instance):
@@ -57,8 +56,6 @@ class WhetherRepresentationSerializer(serializers.ModelSerializer) :
 class PostRequestSerializers(serializers.Serializer) :
   whether = WhetherRepresentationSerializer()
   title = serializers.CharField(max_length=50)
-  img_url = serializers.URLField(max_length=500)
-  photo = serializers.ImageField(use_url=True)
   visibility = serializers.CharField(max_length=10)
   longitude = serializers.FloatField()
   latitude = serializers.FloatField()

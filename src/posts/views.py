@@ -6,27 +6,49 @@ from .serializers import PostSerializers, WhetherSerializers, PostRequestSeriali
 from rest_framework.response import Response
 from django.db.models import Q
 import json
+import base64
+import os
+from datetime import datetime
+from src import settings
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 class PostListView(views.APIView) :
   queryset = Post.objects.all()
   serializer_class = PostSerializers
   
   def post(self, request, *args, **kwargs):
-    token = request.META.get('HTTP_ACCESSTOKEN')
-    try:
-      requester = User.objects.get(user_token = token)
-    except User.DoesNotExist :
-      return Response(status=status.HTTP_401_UNAUTHORIZED)
-      
+    # token = request.META.get('HTTP_ACCESSTOKEN')
+    # try:
+    #   requester = User.objects.get(user_token = token)
+    # except User.DoesNotExist :
+    #   return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
     request_serializer = PostRequestSerializers(data=request.data)
     if not request_serializer.is_valid() :
       return Response(request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     request_body = request_serializer.data
 
+    img_string = request.data['img_base64']
+    imgdata = base64.b64decode(img_string)
+    now = datetime.now().strftime('%Y%m%d%H%M%S%f')
+    filename = request.data['writer_id'].__str__()+now.__str__() + ".jpeg"
+    # dir_list = os.listdir(settings.MEDIA_ROOT+'/users/')
+    # if str(request.data['writer_id']) not in dir_list:
+    #   os.makedirs(settings.MEDIA_ROOT+'/users/'+str(request.data['writer_id']))
+    # media_root = settings.MEDIA_ROOT+'/users/'+str(request.data['writer_id'])+'/'+filename
+
+    media_root = settings.MEDIA_ROOT + '/'+filename
+    media_url = request.build_absolute_uri(settings.MEDIA_URL + filename)
+    with open(media_root, 'wb') as f:
+      f.write(imgdata)
+    
+    # 폴더에만 저장하고 db에는 저장X 
+
     new_post = {
-      'writer' : requester.id,
+      'writer' : 123,
       'title' : request_body.get('title'),
-      'img_url' : request_body.get('img_url'),
+      'img_url' : media_url, #??
       'visibility' : request_body.get('visibility'),
       'longitude' : request_body.get('longitude'),
       'latitude' : request_body.get('latitude'), 
@@ -44,6 +66,7 @@ class PostListView(views.APIView) :
       return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     post_serializer.save()
     
+    print(request_body.get('whether'))
     whether_info = request_body.get('whether')
     new_wheter = {
       'post' : post_serializer.data.get('id'),
@@ -58,7 +81,6 @@ class PostListView(views.APIView) :
     if not whetherSerializers.is_valid():
       return Response(whetherSerializers.errors, status=status.HTTP_400_BAD_REQUEST)
     whetherSerializers.save()
-    
     new_post = Post.objects.get(id=post_serializer.data.get('id'))
     post_serializer = PostSerializers(new_post)
     return Response(post_serializer.data, status=status.HTTP_201_CREATED)
