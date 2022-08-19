@@ -54,9 +54,18 @@ class WhetherRepresentationSerializer(serializers.ModelSerializer) :
       model = Whether
       fields = ['temperature_max', 'temperature_min', 'temperature_avg', 'precipitation_avg', 'wind_speed_avg', 'humidity_avg']
 
-class PostRequestSerializers(serializers.ModelSerializer) :
+class PostRequestSerializers(serializers.Serializer) :
+  whether = WhetherRepresentationSerializer()
+  title = serializers.CharField(max_length=50)
+  img_url = serializers.URLField(max_length=500)
   photo = serializers.ImageField(use_url=True)
-
-  class Meta:
-    model = Post
-    fields = ['whether','title','photo','visibility','longitude','latitude','start_time','end_time','whether_approved','top','pants','shoes','tips']
+  visibility = serializers.CharField(max_length=10)
+  longitude = serializers.FloatField()
+  latitude = serializers.FloatField()
+  start_time = serializers.DateTimeField()
+  end_time = serializers.DateTimeField()
+  whether_approved = serializers.BooleanField()
+  top = StringListField()
+  pants = StringListField()
+  shoes = StringListField()
+  tips = StringListField()

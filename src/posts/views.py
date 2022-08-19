@@ -10,15 +10,21 @@ import json
 class PostListView(views.APIView) :
   queryset = Post.objects.all()
   serializer_class = PostSerializers
-
+  
   def post(self, request, *args, **kwargs):
+    token = request.META.get('HTTP_ACCESSTOKEN')
+    try:
+      requester = User.objects.get(user_token = token)
+    except User.DoesNotExist :
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
+      
     request_serializer = PostRequestSerializers(data=request.data)
     if not request_serializer.is_valid() :
       return Response(request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     request_body = request_serializer.data
 
     new_post = {
-      'writer' : request_body.get('id'),
+      'writer' : requester.id,
       'title' : request_body.get('title'),
       'img_url' : request_body.get('img_url'),
       'visibility' : request_body.get('visibility'),
