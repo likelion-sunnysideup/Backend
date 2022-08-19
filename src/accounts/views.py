@@ -10,7 +10,7 @@ from .Globals import KAKAO_CONFIG, kakao_login_uri ,kakao_token_uri, kakao_profi
 import requests
 from django import utils
 from uuid import uuid4
-import json
+import json, pprint
 
 class UserList(generics.ListAPIView):
   queryset = User.objects.all()
@@ -19,7 +19,8 @@ class UserList(generics.ListAPIView):
 class KakaoLogin(APIView):
   def get(self, request):
     client_id = KAKAO_CONFIG['KAKAO_REST_API_KEY']
-    redirect_uri = "http://127.0.0.1:8000/users/kakao-oauth/" # TODO 이거 너무 하드 코딩
+    redirect_uri = request.build_absolute_uri("/users/kakao-oauth/")
+    print("redirect_uri : ", redirect_uri)
 
     uri = f"{kakao_login_uri}?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
     
