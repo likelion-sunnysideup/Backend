@@ -17,7 +17,7 @@ class PostListView(views.APIView) :
       requester = User.objects.get(user_token = token)
     except User.DoesNotExist :
       return Response(status=status.HTTP_401_UNAUTHORIZED)
-
+      
     request_serializer = PostRequestSerializers(data=request.data)
     if not request_serializer.is_valid() :
       return Response(request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
